@@ -6,7 +6,6 @@ var now = moment();
 // console.log(now.format('x'));
 // console.log(now.valueOf());
 
-
 var timestamp = 1457954794690;
 var timestampMoment = moment.utc(timestamp);
 
