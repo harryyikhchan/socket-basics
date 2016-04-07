@@ -14,6 +14,19 @@ var clientInfo = {
 io.on('connection', function (socket) {
 	console.log('User connected via socket.io!');
 	
+	socket.on('disconnect', function (req) {
+		var userData = clientInfo[socket.id];
+		if (typeof clientInfo[socket.id] !== 'undefined') {
+			socket.leave(userData.room);
+			io.to(userData.room).emit('message', {
+				name: 'System',
+				text: userData.name + ' has left!',
+				timestamp: moment().valueOf()
+			});
+			delete clientInfo[socket.id];
+		}
+	});
+
 	socket.on('joinRoom', function (req) {
 		clientInfo[socket.id] = req;
 		socket.join(req.room);
@@ -22,7 +35,7 @@ io.on('connection', function (socket) {
 			text: req.name + ' has joined!',
 			timestamp: moment().valueOf()
 		});
-	})
+	});
 
 	socket.on('message', function (message) {
 		console.log('Message received: ' + message.text);
